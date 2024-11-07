@@ -166,161 +166,132 @@ class _KompenScreenState extends State<KompenScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Tampilkan dialog konfirmasi sebelum keluar aplikasi
-        final shouldPop = await showDialog<bool>(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Keluar Aplikasi'),
-              content: Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                  child: Text('Tidak'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                  child: Text('Ya'),
-                ),
-              ],
-            );
-          },
-        );
-        return shouldPop ?? false;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  Icons.school,
-                  color: Colors.blue.shade900,
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade100,
+                borderRadius: BorderRadius.circular(12),
               ),
-              SizedBox(width: 12),
-              Text(
-                'KOMPEN',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                  color: Colors.black,
-                ),
+              child: Icon(
+                Icons.school,
+                color: Colors.blue.shade900,
               ),
-            ],
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0,
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFFB0B0E3), Color(0xFF9090D0)],
             ),
+            SizedBox(width: 12),
+            Text(
+              'KOMPEN',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        elevation: 0,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFB0B0E3), Color(0xFF9090D0)],
           ),
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Daftar Tugas',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Daftar Tugas',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.assignment, color: Colors.white, size: 16),
-                          SizedBox(width: 4),
-                          Text(
-                            '${tasks.length} Tugas',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.assignment, color: Colors.white, size: 16),
+                        SizedBox(width: 4),
+                        Text(
+                          '${tasks.length} Tugas',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: tasks.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 12),
-                      child: TaskCard(
-                        task: tasks[index],
-                        onTap: () => _showTaskOptions(context, index),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 8,
-                offset: Offset(0, 4),
-              ),
-            ],
-            gradient: LinearGradient(
-              colors: [Color(0xFFFFEAA4), Color(0xFFFFD74A)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: FloatingActionButton(
-            onPressed: () async {
-              final result = await Navigator.push<Task>(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TambahTugasPage(),
-                ),
-              );
-              if (result != null) {
-                addTask(result);
-              }
-            },
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            child: Icon(Icons.add, color: Colors.black87),
-          ),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                itemCount: tasks.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: TaskCard(
+                      task: tasks[index],
+                      onTap: () => _showTaskOptions(context, index),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
+      ),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+          gradient: LinearGradient(
+            colors: [Color(0xFFFFEAA4), Color(0xFFFFD74A)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: FloatingActionButton(
+          onPressed: () async {
+            final result = await Navigator.push<Task>(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahTugasPage(),
+              ),
+            );
+            if (result != null) {
+              addTask(result);
+            }
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: Icon(Icons.add, color: Colors.black87),
+        ),
+        // ),
       ),
     );
   }

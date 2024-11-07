@@ -4,6 +4,7 @@ import 'package:pbl/NotificationScreen.dart';
 import 'package:pbl/ProfileDosenPage.dart';
 import 'package:pbl/loginpage.dart';
 import 'package:pbl/maindua.dart'; // Import LoginPage
+import 'package:pbl/ForgotPasswordPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,10 +20,12 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         fontFamily: 'Poppins',
       ),
-      home: const Maindua(), // Set LoginPage as the initial page
+      home: const Maindua(), // Set Maindua sebagai halaman pertama
       routes: {
         '/login': (context) => LoginPage(),
-        '/main': (context) => MainScreen(), // Route for MainScreen
+        '/main': (context) => MainScreen(),
+        '/password': (context) =>
+            ForgotPasswordPage(), // Route ke ForgotPasswordPage
       },
     );
   }
@@ -56,15 +59,15 @@ class _MainScreenState extends State<MainScreen> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
-            label: 'Beranda',
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications_outlined),
-            label: 'Notifikasi',
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
-            label: 'Profil',
+            label: '',
           ),
         ],
         currentIndex: _selectedIndex,

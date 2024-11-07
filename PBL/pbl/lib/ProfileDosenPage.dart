@@ -82,7 +82,7 @@ class _ProfileDosenPageState extends State<ProfileDosenPage> {
                     gradient: LinearGradient(
                       colors: [
                         Colors.blue.shade100,
-                        Colors.blue.shade300,
+                        const Color.fromARGB(255, 44, 145, 227),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,

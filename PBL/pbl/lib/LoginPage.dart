@@ -1,7 +1,6 @@
-// lib/loginpage.dart
-
 import 'package:flutter/material.dart';
 import 'package:pbl/BerandaDosenPage.dart';
+import 'package:pbl/ForgotPasswordPage.dart'; // Import ForgotPasswordPage
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -132,7 +131,8 @@ class _LoginFormState extends State<LoginForm> {
             TextButton(
               onPressed: () {
                 // Navigasi ke halaman Lupa Password
-                Navigator.pushNamed(context, '/forgot-password');
+                Navigator.pushNamed(
+                    context, '/password'); // Update route '/password'
               },
               child: const Text('Lupa Password?'),
             ),

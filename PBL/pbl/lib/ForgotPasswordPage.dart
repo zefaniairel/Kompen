@@ -6,7 +6,6 @@ class ForgotPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Gunakan gradient yang sama dengan LoginPage
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -158,7 +157,6 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
 
     // Validasi NIP (misalnya hanya angka dan panjang tertentu)
     if (!RegExp(r'^\d{10}$').hasMatch(nip)) {
-      // Contoh: NIP harus 10 digit
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('NIP harus terdiri dari 10 digit angka')),
       );
@@ -170,7 +168,6 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
       _isSuccess = true;
     });
 
-    // Tampilkan snackbar atau dialog berhasil
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Reset Password Berhasil!')),
     );
@@ -219,31 +216,19 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
           keyboardType: TextInputType.emailAddress,
         ),
         const SizedBox(height: 20),
-        // Reset Password Button
+        // Reset Button
         ElevatedButton(
           onPressed: _resetPassword,
           child: const Text('Reset Password'),
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(double.infinity, 50),
-            backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-          ),
         ),
-        const SizedBox(height: 20),
-        // Icon untuk menampilkan status
+        const SizedBox(height: 10),
+        // Informasi Reset
         if (_isSuccess)
-          const Icon(
-            Icons.check_circle,
-            color: Colors.green,
-            size: 50.0,
+          const Text(
+            'Password berhasil direset!',
+            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
           ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    _nipController.dispose();
-    _emailController.dispose();
-    super.dispose();
   }
 }

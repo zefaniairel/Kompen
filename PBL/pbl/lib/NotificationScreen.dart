@@ -38,15 +38,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
       title: 'Pengajuan Kompen',
       name: 'Irwil',
       message: 'Mengajukan tugas kompen!',
-      chatMessage: 'Chat box: saya req tanggal 5',
+      chatMessage: 'saya req tanggal 5',
       competence: '',
     ),
     NotificationData(
       title: 'Pengajuan Kompen',
       name: 'Liri',
       message: 'Mengajukan tugas kompen!',
-      chatMessage: 'Chat box: - ',
-      competence: '',
+      chatMessage: ' - ',
+      competence: 'Saya ahli dalam bidang excel, saya juga bisa coding 24/7',
     ),
     NotificationData(
       title: 'Pengajuan Kompen',
@@ -55,7 +55,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
       chatMessage: 'Chat box: Saya suka tugas ini',
       competence: 'saya bisa excel',
     ),
-    // Tambahkan pengajuan lain jika perlu
   ];
 
   List<NotificationData> pengumpulanNotifications = [
@@ -77,14 +76,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
       deadline: 'Tanggal 10',
       submittedFile: 'PengumpulanTugas.excel',
     ),
-    // Tambahkan pengumpulan lain jika perlu
   ];
 
   void _updateNotificationStatus(
       NotificationData notification, String newStatus) {
     setState(() {
       notification.status = newStatus;
-      // Hapus notifikasi setelah status diperbarui
       if (newStatus == 'accepted' || newStatus == 'rejected') {
         if (pengajuanNotifications.contains(notification)) {
           pengajuanNotifications.remove(notification);
@@ -158,9 +155,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 152, 152, 225),
+          color: Colors.blue.shade50, // Light blue background
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300, width: 1),
+          border: Border.all(color: Colors.blue.shade200, width: 1),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -174,6 +171,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header with Title and Name
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -186,7 +184,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Colors.blueAccent,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -201,6 +199,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ],
                     ),
                   ),
+                  // Icon to indicate status
+                  Icon(
+                    notification.status == 'pending'
+                        ? Icons.access_time
+                        : notification.status == 'accepted'
+                            ? Icons.check_circle
+                            : Icons.cancel,
+                    color: notification.status == 'pending'
+                        ? Colors.orange
+                        : notification.status == 'accepted'
+                            ? Colors.green
+                            : Colors.red,
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -208,11 +219,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 notification.message,
                 style: const TextStyle(
                   fontSize: 14,
-                  color: Colors.black,
+                  color: Colors.black87,
                 ),
               ),
               if (notification.chatMessage.isNotEmpty) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -226,6 +237,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       fontSize: 12,
                       color: Colors.black54,
                     ),
+                  ),
+                ),
+              ],
+              if (notification.competence.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  'Kompetensi: ${notification.competence}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.blueGrey,
                   ),
                 ),
               ],

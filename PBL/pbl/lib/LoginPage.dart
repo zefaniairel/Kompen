@@ -150,33 +150,13 @@ class _LoginFormState extends State<LoginForm> {
                   return;
                 }
 
-                // Simulasi autentikasi
-                print('Username: $username');
-                print('Password: $password');
-                print('Peran: $role');
-
-                // Tampilkan snackbar
+                // Simulasi autentikasi berhasil
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Login sebagai $role berhasil!')),
                 );
 
-                // Navigasi berdasarkan peran
-                if (role == 'Dosen') {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            KompenScreen()), // Ganti dengan halaman Beranda Dosen
-                  );
-                } else if (role == 'Tendik') {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            KompenScreen()), // Ganti dengan halaman Beranda Tendik
-                  );
-                }
-                Navigator.pushReplacementNamed(context, '/beranda');
+                // Navigasi ke MainScreen
+                Navigator.pushReplacementNamed(context, '/main');
               },
               child: const Text('Login'),
             ),

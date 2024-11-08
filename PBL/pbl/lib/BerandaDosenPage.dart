@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pbl/EditTaskPage.dart';
 import 'package:pbl/TambahTugasPage.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -168,6 +164,7 @@ class _KompenScreenState extends State<KompenScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             Container(

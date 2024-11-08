@@ -98,6 +98,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text('Notifikasi'),
           bottom: const TabBar(
             tabs: [

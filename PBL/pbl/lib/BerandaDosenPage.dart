@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:pbl/EditTaskPage.dart';
 import 'package:pbl/TambahTugasPage.dart';
@@ -296,15 +298,17 @@ class _KompenScreenState extends State<KompenScreen> {
 
 // Task class dan TaskCard class tetap sama seperti sebelumnya
 class Task {
-  String title;
-  String description;
-  String firstDeadline;
-  String lastDeadline;
-  String progress;
-  int jumlahMahasiswa;
-  int nilaiJam;
-  String tagKompetensi;
-  String namaKompen;
+  final String title;
+  final String description;
+  final String firstDeadline;
+  final String lastDeadline;
+  final String progress;
+  final int jumlahMahasiswa;
+  final int nilaiJam;
+  final String tagKompetensi;
+  final String namaKompen;
+  final String? fileName;
+  final Uint8List? fileBytes;
 
   Task({
     required this.title,
@@ -316,6 +320,8 @@ class Task {
     required this.nilaiJam,
     required this.tagKompetensi,
     required this.namaKompen,
+    this.fileName,
+    this.fileBytes,
   });
 }
 

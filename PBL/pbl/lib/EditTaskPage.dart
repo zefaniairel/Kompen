@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:pbl/BerandaDosenPage.dart';
 
 class EditTaskPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   late TextEditingController _deadlineAkhirController;
   late TextEditingController _tagKompetensiController;
   String? _selectedStatus;
+  String? _fileName;
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
         ? widget.task.title.split(': ')[1]
         : null;
 
+    // Inisialisasi controllers dengan data yang ada
     _namaKompenController = TextEditingController(text: widget.task.namaKompen);
     _deskripsiController = TextEditingController(text: widget.task.description);
     _jumlahMahasiswaController =
@@ -42,6 +45,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
         TextEditingController(text: widget.task.lastDeadline);
     _tagKompetensiController =
         TextEditingController(text: widget.task.tagKompetensi);
+
+    // Inisialisasi nama file dari data sebelumnya
+    _fileName = widget.task.fileName;
   }
 
   @override
@@ -75,29 +81,25 @@ class _EditTaskPageState extends State<EditTaskPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTextField('Masukkan nama kompen', _namaKompenController),
+                _buildTextField('Nama kompen', _namaKompenController),
                 SizedBox(height: 16),
                 _buildDropdownButton(),
                 SizedBox(height: 16),
-                _buildTextField(
-                    'Masukkan deskripsi tugas', _deskripsiController),
+                _buildTextField('Deskripsi tugas', _deskripsiController),
                 SizedBox(height: 16),
-                _buildTextField(
-                    'Masukkan jumlah mahasiswa', _jumlahMahasiswaController,
+                _buildTextField('Jumlah mahasiswa', _jumlahMahasiswaController,
                     isNumber: true),
                 SizedBox(height: 16),
-                _buildTextField(
-                    'Masukkan nilai jam kompen', _nilaiJamKompenController,
+                _buildTextField('Jumlah jam kompen', _nilaiJamKompenController,
                     isNumber: true),
                 SizedBox(height: 16),
-                _buildDateField(
-                    'Masukkan First Deadline', _deadlineAwalController),
+                _buildDateField('First Deadline', _deadlineAwalController),
                 SizedBox(height: 16),
-                _buildDateField(
-                    'Masukkan Last Deadline', _deadlineAkhirController),
+                _buildDateField('Last Deadline', _deadlineAkhirController),
                 SizedBox(height: 16),
-                _buildTextField(
-                    'Masukkan tag kompetensi', _tagKompetensiController),
+                _buildTextField('Tag kompetensi', _tagKompetensiController),
+                SizedBox(height: 16),
+                _buildFileUploadSection(),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _saveForm,
@@ -113,6 +115,80 @@ class _EditTaskPageState extends State<EditTaskPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildFileUploadSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFB0C4DE),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (_fileName != null)
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  'File saat ini: $_fileName',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _fileName != null
+                        ? 'Ganti file?'
+                        : 'Belum ada file yang dipilih',
+                    style: TextStyle(color: Colors.black87),
+                  ),
+                ),
+                TextButton.icon(
+                  icon: Icon(Icons.attach_file),
+                  label: Text(_fileName != null ? 'Ganti File' : 'Pilih File'),
+                  onPressed: _pickFile,
+                ),
+                if (_fileName != null)
+                  IconButton(
+                    icon: Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        _fileName = null;
+                      });
+                    },
+                    color: Colors.red,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'xls', 'xlsx'],
+      );
+
+      if (result != null) {
+        setState(() {
+          _fileName = result.files.first.name;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error picking file: $e')),
+      );
+    }
   }
 
   Widget _buildTextField(String hintText, TextEditingController controller,
@@ -225,11 +301,12 @@ class _EditTaskPageState extends State<EditTaskPage> {
         description: _deskripsiController.text,
         firstDeadline: _deadlineAwalController.text,
         lastDeadline: _deadlineAkhirController.text,
-        progress: widget.task.progress, // Maintain existing progress
+        progress: widget.task.progress,
         jumlahMahasiswa: int.parse(_jumlahMahasiswaController.text),
         nilaiJam: int.parse(_nilaiJamKompenController.text),
         tagKompetensi: _tagKompetensiController.text,
         namaKompen: _namaKompenController.text,
+        fileName: _fileName, // Menyimpan nama file
       );
 
       Navigator.of(context).pop(editedTask);

@@ -1,31 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 import 'package:pbl/NotificationDetailPage.dart';
-import 'package:url_launcher/url_launcher.dart' as launcher;
-
-class NotificationData {
-  final String title;
-  final String name;
-  final String message;
-  final String chatMessage;
-  String status; // "pending", "accepted", "rejected"
-  final String competence; // untuk pengajuan
-  final String taskDescription; // untuk pengumpulan
-  final String deadline; // untuk pengumpulan
-  final String submittedFile; // untuk pengumpulan
-
-  NotificationData({
-    required this.title,
-    required this.name,
-    required this.message,
-    required this.chatMessage,
-    this.status = 'pending',
-    this.competence = '', // default
-    this.taskDescription = '', // default
-    this.deadline = '', // default
-    this.submittedFile = '', // default
-  });
-}
+import 'NotificationData.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
@@ -54,7 +29,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       title: 'Pengajuan Kompen',
       name: 'Bela',
       message: 'Mengajukan tugas kompen!',
-      chatMessage: 'Chat box: Saya suka tugas ini',
+      chatMessage: 'Saya berharap dapat diterima untuk mendapatkan tugas kompen ini',
       competence: 'saya bisa excel',
     ),
   ];
@@ -64,7 +39,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       title: 'Pengumpulan Tugas',
       name: 'Dita Karang',
       message: 'Mengumpulkan tugas!',
-      chatMessage: 'Chat box: saya sudah mengerjakan tugas',
+      chatMessage: 'saya sudah mengerjakan tugas',
       taskDescription: 'Deskripsi tugas A',
       deadline: 'Tanggal 10',
       submittedFile: 'TugasSatu.pdf',
@@ -73,35 +48,93 @@ class _NotificationScreenState extends State<NotificationScreen> {
       title: 'Pengumpulan Tugas',
       name: 'Jefri N',
       message: 'Mengumpulkan tugas!',
-      chatMessage: 'Chat box: saya sudah mengerjakan tugas',
+      chatMessage: 'saya sudah mengerjakan tugas',
       taskDescription: 'Deskripsi tugas A',
       deadline: 'Tanggal 10',
       submittedFile: 'PengumpulanTugas.excel',
     ),
   ];
 
-  void _updateNotificationStatus(
-      NotificationData notification, String newStatus) {
-    setState(() {
-      notification.status = newStatus;
-    });
+  List<NotificationData> progressNotifications = [
+    NotificationData(
+      title: 'Progress Tugas',
+      name: 'Jaehyun Kim',
+      message: 'Mengirim progress tugas ke-1',
+      taskName: 'Input Data Excel Mahasiswa',
+      taskDescription: 'Membuat database excel untuk data mahasiswa',
+      progressNumber: 1,
+      progressImage: 'progress1.jpg',
+      currentProgress: 0,
+    ),
+    NotificationData(
+      title: 'Progress Tugas',
+      name: 'Yeonjun',
+      message: 'Mengirim progress tugas ke-2',
+      taskName: 'Pembuatan Website',
+      taskDescription: 'Membuat landing page website fakultas',
+      progressNumber: 2,
+      progressImage: 'progress2.jpg',
+      currentProgress: 25,
+    ),
+  ];
 
+  void _updateNotificationStatus(NotificationData notification, String newStatus) {
+  setState(() {
+    notification.status = newStatus;
+
+    // Khusus untuk progress notification
+    if (notification.title == 'Progress Tugas' && newStatus == 'accepted') {
+      // Hitung progress baru (25% untuk setiap progress yang diterima)
+      int newProgress = notification.currentProgress + 25;
+
+      // Update progress di list
+      int index = progressNotifications.indexOf(notification);
+      if (index != -1) {
+        progressNotifications[index] = NotificationData(
+          title: notification.title,
+          name: notification.name,
+          message: notification.message,
+          status: newStatus,
+          taskName: notification.taskName,
+          taskDescription: notification.taskDescription,
+          progressNumber: notification.progressNumber,
+          progressImage: notification.progressImage,
+          currentProgress: newProgress,
+        );
+      }
+    }
+
+    // Hanya hapus notifikasi untuk pengajuan dan pengumpulan
     if (newStatus == 'accepted' || newStatus == 'rejected') {
-      // Hapus notifikasi dari daftar yang sesuai
       if (pengajuanNotifications.contains(notification)) {
         pengajuanNotifications.remove(notification);
-      } else {
+        Navigator.of(context).pop();
+      } else if (pengumpulanNotifications.contains(notification)) {
         pengumpulanNotifications.remove(notification);
+        Navigator.of(context).pop();
+      } else if (notification.title == 'Progress Tugas') {
+        // Untuk progress, hanya kembali ke halaman sebelumnya tanpa menghapus notifikasi
+        Navigator.of(context).pop();
+        // Tampilkan snackbar untuk memberi tahu status
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              newStatus == 'accepted' 
+                ? 'Progress diterima! Progress saat ini: ${notification.currentProgress + 25}%'
+                : 'Progress ditolak. Silakan perbaiki dan kirim ulang.',
+            ),
+            backgroundColor: newStatus == 'accepted' ? Colors.green : Colors.red,
+          ),
+        );
       }
-      // Navigasi kembali ke halaman utama (misalnya dashboard)
-      Navigator.of(context).pop();
     }
-  }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -109,13 +142,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Pengajuan'),
+              Tab(text: 'Progress'),
               Tab(text: 'Pengumpulan'),
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            // Tab untuk Pengajuan
             ListView.builder(
               itemCount: pengajuanNotifications.length,
               itemBuilder: (context, index) {
@@ -126,7 +159,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 );
               },
             ),
-            // Tab untuk Pengumpulan
+            ListView.builder(
+              itemCount: progressNotifications.length,
+              itemBuilder: (context, index) {
+                final notification = progressNotifications[index];
+                return _buildProgressCard(
+                  context: context,
+                  notification: notification,
+                );
+              },
+            ),
             ListView.builder(
               itemCount: pengumpulanNotifications.length,
               itemBuilder: (context, index) {
@@ -142,6 +184,167 @@ class _NotificationScreenState extends State<NotificationScreen> {
       ),
     );
   }
+
+  Widget _buildProgressCard({
+    required BuildContext context,
+    required NotificationData notification,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NotificationDetailPage(
+              notification: notification,
+              onUpdateStatus: _updateNotificationStatus,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.blue.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.blue.shade200, width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          notification.taskName,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueAccent,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          notification.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Icon(
+                        notification.status == 'pending'
+                            ? Icons.access_time
+                            : notification.status == 'accepted'
+                                ? Icons.check_circle
+                                : Icons.cancel,
+                        color: notification.status == 'pending'
+                            ? Colors.orange
+                            : notification.status == 'accepted'
+                                ? Colors.green
+                                : Colors.red,
+                      ),
+                      Text(
+                        '${notification.currentProgress}%',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                notification.message,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+              LinearProgressIndicator(
+                value: notification.currentProgress / 100,
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                minHeight: 10,
+              ),
+              if (notification.progressImage.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Container(
+                  height: 100,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.image,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Tambahkan helper function untuk menampilkan status progress
+Widget _buildProgressStatus(NotificationData notification) {
+  String statusText = '';
+  Color statusColor = Colors.grey;
+
+  if (notification.progressNumber == 1) {
+    statusText = 'Progress Pertama';
+  } else if (notification.progressNumber == 2) {
+    statusText = 'Progress Kedua';
+  } else if (notification.progressNumber == 3) {
+    statusText = 'Progress Ketiga';
+  } else if (notification.progressNumber == 4) {
+    statusText = 'Progress Final';
+  }
+
+  if (notification.status == 'accepted') {
+    statusColor = Colors.green;
+    statusText += ' (Diterima)';
+  } else if (notification.status == 'rejected') {
+    statusColor = Colors.red;
+    statusText += ' (Ditolak)';
+  } else {
+    statusText += ' (Pending)';
+  }
+
+  return Text(
+    statusText,
+    style: TextStyle(
+      color: statusColor,
+      fontWeight: FontWeight.bold,
+    ),
+  );
+}
 
   Widget _buildNotificationCard({
     required BuildContext context,
@@ -162,7 +365,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.blue.shade50, // Light blue background
+          color: Colors.blue.shade50,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.blue.shade200, width: 1),
           boxShadow: [
@@ -178,7 +381,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header with Title and Name
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -206,7 +408,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ],
                     ),
                   ),
-                  // Icon to indicate status
                   Icon(
                     notification.status == 'pending'
                         ? Icons.access_time

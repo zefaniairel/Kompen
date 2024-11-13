@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'BerandaDosenPage.dart';
 
@@ -18,6 +19,11 @@ class _TambahTugasPageState extends State<TambahTugasPage> {
   final _deadlineAkhirController = TextEditingController();
   final _tagKompetensiController = TextEditingController();
   String? _selectedStatus;
+
+  // New variables for file handling
+  // PlatformFile? _selectedFile;
+  // Uint8List? _fileBytes;
+  String? _fileName;
 
   @override
   Widget build(BuildContext context) {
@@ -38,35 +44,31 @@ class _TambahTugasPageState extends State<TambahTugasPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTextField('Masukkan nama kompen', _namaKompenController),
+                _buildTextField('Nama kompen', _namaKompenController),
                 SizedBox(height: 16),
                 _buildDropdownButton(),
                 SizedBox(height: 16),
-                _buildTextField(
-                    'Masukkan deskripsi tugas', _deskripsiController),
+                _buildTextField('Deskripsi tugas', _deskripsiController),
                 SizedBox(height: 16),
-                _buildTextField(
-                    'Masukkan jumlah mahasiswa', _jumlahMahasiswaController,
+                _buildTextField('Jumlah mahasiswa', _jumlahMahasiswaController,
                     isNumber: true),
                 SizedBox(height: 16),
-                _buildTextField(
-                    'Masukkan nilai jam kompen', _nilaiJamKompenController,
+                _buildTextField('Jumlah jam kompen', _nilaiJamKompenController,
                     isNumber: true),
                 SizedBox(height: 16),
-                _buildDateField(
-                    'Masukkan First Deadline', _deadlineAwalController),
+                _buildDateField(' First Deadline', _deadlineAwalController),
                 SizedBox(height: 16),
-                _buildDateField(
-                    'Masukkan Last Deadline', _deadlineAkhirController),
+                _buildDateField(' Last Deadline', _deadlineAkhirController),
                 SizedBox(height: 16),
-                _buildTextField(
-                    'Masukkan tag kompetensi', _tagKompetensiController),
+                _buildTextField('Tag kompetensi', _tagKompetensiController),
+                SizedBox(height: 16),
+                _buildFileUploadSection(),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _saveForm,
                   child: Text('Simpan'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 69, 90, 226),
+                    backgroundColor: const Color.fromARGB(255, 1, 2, 2),
                     minimumSize: Size(double.infinity, 50),
                   ),
                 ),
@@ -77,6 +79,82 @@ class _TambahTugasPageState extends State<TambahTugasPage> {
       ),
     );
   }
+
+  Widget _buildFileUploadSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFB0C4DE),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _fileName ?? 'Belum ada file yang dipilih',
+                    style: TextStyle(
+                      color: Colors.black87,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                TextButton.icon(
+                  icon: Icon(Icons.attach_file),
+                  label: Text('Pilih File'),
+                  onPressed: _pickFile,
+                ),
+              ],
+            ),
+          ),
+          // if (_fileName != null)
+          //   Padding(
+          //     padding: EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.end,
+          //       children: [
+          //         TextButton(
+          //           onPressed: _clearFile,
+          //           child: Text('Hapus File'),
+          //           style: TextButton.styleFrom(
+          //             foregroundColor: Colors.red,
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'xls', 'xlsx'],
+      );
+
+      if (result != null) {
+        setState(() {
+          _fileName = result.files.first.name;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error picking file: $e')),
+      );
+    }
+  }
+
+  // void _clearFile() {
+  //   setState(() {
+  //     _selectedFile = null;
+  //     _fileName = null;
+  //   });
+  // }
 
   Widget _buildTextField(String hintText, TextEditingController controller,
       {bool isNumber = false}) {
@@ -183,19 +261,20 @@ class _TambahTugasPageState extends State<TambahTugasPage> {
 
   void _saveForm() {
     if (_formKey.currentState!.validate()) {
-      // Buat objek Task dari data yang diisi
+      // Buat objek Task sesuai dengan model yang ada
       Task newTask = Task(
-        title:
-            'Jenis Tugas : $_selectedStatus', // Misalnya bisa ambil dari dropdown
+        title: 'Jenis Tugas : $_selectedStatus',
         description: _deskripsiController.text,
         firstDeadline: _deadlineAwalController.text,
         lastDeadline: _deadlineAkhirController.text,
-        progress: '0/0', // Atur progress sesuai kebutuhan
+        progress: '0/0',
         jumlahMahasiswa: int.parse(_jumlahMahasiswaController.text),
-        nilaiJam: 0, tagKompetensi: '', namaKompen: '',
+        nilaiJam: 0, // sesuai model asli
+        tagKompetensi: '', // sesuai model asli
+        namaKompen: '', // sesuai model asli
       );
 
-      // Kembalikan objek Task ke KompenScreen
+      // Kembali ke halaman sebelumnya dengan data task
       Navigator.of(context).pop(newTask);
     }
   }

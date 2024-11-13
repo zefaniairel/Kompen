@@ -13,7 +13,6 @@ class NotificationDetailPage extends StatelessWidget {
     required this.onUpdateStatus,
   }) : super(key: key);
 
-  // Fungsi untuk mendapatkan icon berdasarkan tipe file
   IconData _getFileIcon(String fileName) {
     String extension = path.extension(fileName).toLowerCase();
     switch (extension) {
@@ -34,7 +33,6 @@ class NotificationDetailPage extends StatelessWidget {
     }
   }
 
-  // Fungsi untuk menangani preview atau download file
   void _handleFileAction(BuildContext context, String fileName) {
     if (fileName.isEmpty) return;
 
@@ -80,7 +78,6 @@ class NotificationDetailPage extends StatelessWidget {
     );
   }
 
-  // Fungsi untuk preview file
   Future<void> _previewFile(BuildContext context, String fileName) async {
     String previewUrl = "https://your-server.com/preview/$fileName";
     final Uri url = Uri.parse(previewUrl);
@@ -111,7 +108,6 @@ class NotificationDetailPage extends StatelessWidget {
     }
   }
 
-  // Fungsi untuk download file
   Future<void> _downloadFile(BuildContext context, String fileName) async {
     String downloadUrl = "https://your-server.com/download/$fileName";
     final Uri url = Uri.parse(downloadUrl);
@@ -237,12 +233,6 @@ class NotificationDetailPage extends StatelessWidget {
                         'Anda menerima notifikasi ini.',
                         () {
                           onUpdateStatus(notification, 'accepted');
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const NotificationScreen(),
-                            ),
-                          );
                         },
                       );
                     },
@@ -257,12 +247,6 @@ class NotificationDetailPage extends StatelessWidget {
                         'Anda menolak notifikasi ini.',
                         () {
                           onUpdateStatus(notification, 'rejected');
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const NotificationScreen(),
-                            ),
-                          );
                         },
                       );
                     },

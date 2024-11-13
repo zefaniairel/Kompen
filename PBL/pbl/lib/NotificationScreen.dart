@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'NotificationDetailPage.dart';
+import 'package:path/path.dart' as path;
+import 'package:pbl/NotificationDetailPage.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
 
 class NotificationData {
   final String title;
@@ -82,14 +84,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
       NotificationData notification, String newStatus) {
     setState(() {
       notification.status = newStatus;
-      if (newStatus == 'accepted' || newStatus == 'rejected') {
-        if (pengajuanNotifications.contains(notification)) {
-          pengajuanNotifications.remove(notification);
-        } else {
-          pengumpulanNotifications.remove(notification);
-        }
-      }
     });
+
+    if (newStatus == 'accepted' || newStatus == 'rejected') {
+      // Hapus notifikasi dari daftar yang sesuai
+      if (pengajuanNotifications.contains(notification)) {
+        pengajuanNotifications.remove(notification);
+      } else {
+        pengumpulanNotifications.remove(notification);
+      }
+      // Navigasi kembali ke halaman utama (misalnya dashboard)
+      Navigator.of(context).pop();
+    }
   }
 
   @override

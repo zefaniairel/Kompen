@@ -8,7 +8,7 @@ class Mainsatu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'KOMPEN App',
+      title: 'KOMPENKU',
       home: Scaffold(
         body: Container(
           decoration: const BoxDecoration(

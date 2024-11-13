@@ -36,7 +36,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 3),
                   const Text(
-                    'Jurusan Teknologi Informasi',
+                    'Jurusan Teknologi Informasi 1',
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.white70,

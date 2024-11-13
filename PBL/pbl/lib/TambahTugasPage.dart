@@ -23,7 +23,7 @@ class _TambahTugasPageState extends State<TambahTugasPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tambah Tugas'),
+        title: Text('Tugas'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),

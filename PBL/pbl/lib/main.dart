@@ -24,6 +24,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginPage(),
         '/main': (context) => MainScreen(),
+        '/beranda': (context) => BerandaDosenPage(),
+        
         '/password': (context) =>
             ForgotPasswordPage(), // Route ke ForgotPasswordPage
       },

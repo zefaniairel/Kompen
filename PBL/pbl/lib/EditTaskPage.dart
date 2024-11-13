@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:pbl/BerandaDosenPage.dart';
+import 'Task.dart';
 
 class EditTaskPage extends StatefulWidget {
   final Task task;
@@ -21,6 +21,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   late TextEditingController _deadlineAwalController;
   late TextEditingController _deadlineAkhirController;
   late TextEditingController _tagKompetensiController;
+  late bool _isOpen; // Tambahkan variabel untuk status
   String? _selectedStatus;
   String? _fileName;
 
@@ -48,6 +49,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
     // Inisialisasi nama file dari data sebelumnya
     _fileName = widget.task.fileName;
+    _isOpen = widget.task.isOpen; // Inisialisasi status
   }
 
   @override
@@ -101,6 +103,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 SizedBox(height: 16),
                 _buildFileUploadSection(),
                 SizedBox(height: 20),
+                SizedBox(height: 16),
+                _buildStatusToggle(),
+                SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _saveForm,
                   child: Text('Simpan Perubahan'),
@@ -113,6 +118,63 @@ class _EditTaskPageState extends State<EditTaskPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatusToggle() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFB0C4DE),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Status Tugas',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                _isOpen ? 'Terbuka' : 'Ditutup',
+                style: TextStyle(
+                  color: _isOpen ? Colors.green : Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Switch(
+                value: _isOpen,
+                onChanged: (bool value) {
+                  setState(() {
+                    _isOpen = value;
+                  });
+                },
+                activeColor: Colors.green,
+                activeTrackColor: Colors.green.shade200,
+                inactiveThumbColor: Colors.red,
+                inactiveTrackColor: Colors.red.shade200,
+              ),
+            ],
+          ),
+          Text(
+            _isOpen
+                ? 'Mahasiswa dapat mengajukan diri untuk tugas ini'
+                : 'Mahasiswa tidak dapat mengajukan diri untuk tugas ini',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.black54,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -306,7 +368,8 @@ class _EditTaskPageState extends State<EditTaskPage> {
         nilaiJam: int.parse(_nilaiJamKompenController.text),
         tagKompetensi: _tagKompetensiController.text,
         namaKompen: _namaKompenController.text,
-        fileName: _fileName, // Menyimpan nama file
+        fileName: _fileName,
+        isOpen: _isOpen, // Tambahkan status saat menyimpan
       );
 
       Navigator.of(context).pop(editedTask);

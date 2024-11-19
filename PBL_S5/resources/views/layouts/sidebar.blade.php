@@ -32,6 +32,30 @@
                     <p>Level User</p>
                 </a>
             </li>
+
+            <li class="nav-header">Data Program Studi</li>
+<li class="nav-item">
+    <a href="{{ url('/prodi') }}" class="nav-link {{ $activeMenu == 'prodi' ? 'active' : '' }}">
+        <i class="nav-icon fas fa-graduation-cap"></i>
+        <p>Program Studi</p>
+    </a>
+</li>
+
+<li class="nav-header">Data Admin</li>
+<li class="nav-item">
+    <a href="{{ url('/admin') }}" class="nav-link {{ $activeMenu == 'admin' ? 'active' : '' }}">
+        <i class="nav-icon fas fa-user-shield"></i>
+        <p>Data Admin</p>
+    </a>
+</li>
+
+<li class="nav-header">Data Kompetensi</li>
+<li class="nav-item">
+    <a href="{{ url('/kompetensi') }}" class="nav-link {{ $activeMenu == 'kompetensi' ? 'active' : '' }}">
+        <i class="nav-icon fas fa-award"></i>
+        <p>Data Kompetensi</p>
+    </a>
+</li>
             {{-- <li class="nav-item">
                 <a href="{{ url('/user') }}" class="nav-link {{ $activeMenu == 'user' ? 'active' : '' }}">
                     <i class="nav-icon far fa-user"></i>

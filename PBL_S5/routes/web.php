@@ -50,12 +50,14 @@ Route::prefix('admin')->group(function () {
 
 Route::prefix('kompetensi')->group(function () {
     Route::get('/', [KompetensiController::class, 'index'])->name('kompetensi.index');
-    Route::post('/kompetensi/list', [KompetensiController::class, 'list'])->name('kompetensi.list');
     Route::get('/create', [KompetensiController::class, 'create'])->name('kompetensi.create');
     Route::post('/', [KompetensiController::class, 'store'])->name('kompetensi.store');
-    Route::get('/{kompetensi}', [KompetensiController::class, 'show'])->name('kompetensi.show');
-    Route::get('/{kompetensi}/edit', [KompetensiController::class, 'edit'])->name('kompetensi.edit');
-    Route::put('/{kompetensi}', [KompetensiController::class, 'update'])->name('kompetensi.update');
-    Route::delete('/{kompetensi}', [KompetensiController::class, 'destroy'])->name('kompetensi.destroy');
-    Route::get('/{kompetensi}/confirm', [KompetensiController::class, 'confirm_ajax'])->name('kompetensi.confirm');
-});
+    Route::post('/ajax', [KompetensiController::class, 'store_ajax'])->name('kompetensi.store_ajax');
+    Route::get('/{id}', [KompetensiController::class, 'show'])->name('kompetensi.show');
+    Route::get('/{id}/edit', [KompetensiController::class, 'edit'])->name('kompetensi.edit');
+    Route::put('/{id}', [KompetensiController::class, 'update'])->name('kompetensi.update');
+    Route::put('/{id}/edit_ajax', [KompetensiController::class, 'update_ajax'])->name('kompetensi.update_ajax');
+    Route::delete('/{id}', [KompetensiController::class, 'destroy'])->name('kompetensi.destroy');
+    Route::get('/{id}/delete_ajax', [KompetensiController::class, 'confirm_ajax'])->name('kompetensi.confirm_ajax');
+    Route::post('/import_ajax', [KompetensiController::class, 'import_ajax'])->name('kompetensi.import_ajax');
+ });

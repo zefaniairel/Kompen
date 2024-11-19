@@ -16,15 +16,22 @@ class MahasiswaSeeder extends Seeder
         $data = [
             [
                 'mahasiswa_id' => 1,
-                'nama' => 'John Doe',
+                'mahasiswa_nama' => 'John Doe',
                 'nim' => '12345',
                 'username' => 'johndoe',
                 'kompetensi' => 'Web Development',
                 'semester' => 1,
                 'password' => Hash::make('12345'),
-                'foto' => 'default.jpg',
-                'prodi_id' => 1,
-                'kompetensi_id' => 1,
+                'level_id' => 2,
+            ],
+            [
+                'mahasiswa_id' => 2,
+                'mahasiswa_nama' => 'Alodia Juan',
+                'nim' => '123456',
+                'username' => 'alodiajuan',
+                'kompetensi' => 'Excel',
+                'semester' => 4,
+                'password' => Hash::make('1234567'),
                 'level_id' => 2,
             ],
         ];

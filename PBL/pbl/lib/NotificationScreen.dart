@@ -29,7 +29,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       title: 'Pengajuan Kompen',
       name: 'Bela',
       message: 'Mengajukan tugas kompen!',
-      chatMessage: 'Saya berharap dapat diterima untuk mendapatkan tugas kompen ini',
+      chatMessage:
+          'Saya berharap dapat diterima untuk mendapatkan tugas kompen ini',
       competence: 'saya bisa excel',
     ),
   ];
@@ -60,6 +61,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       title: 'Progress Tugas',
       name: 'Jaehyun Kim',
       message: 'Mengirim progress tugas ke-1',
+      taskName: 'Input Data Excel Mahasiswa',
+      taskDescription: 'Membuat database excel untuk data mahasiswa',
       progressNumber: 1,
       progressImage: 'progress1.jpg',
       currentProgress: 0,
@@ -68,13 +71,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
       title: 'Progress Tugas',
       name: 'Yeonjun',
       message: 'Mengirim progress tugas ke-2',
+      taskName: 'Pembuatan Website',
+      taskDescription: 'Membuat landing page website fakultas',
       progressNumber: 2,
       progressImage: 'progress2.jpg',
       currentProgress: 50,
     ),
   ];
 
-  void _updateNotificationStatus(NotificationData notification, String newStatus) {
+  void _updateNotificationStatus(
+      NotificationData notification, String newStatus) {
     setState(() {
       notification.status = newStatus;
 
@@ -82,6 +88,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
       if (notification.title == 'Progress Tugas' && newStatus == 'accepted') {
         // Hitung progress baru (50% untuk setiap progress yang diterima)
         int newProgress = notification.currentProgress + 50;
+
+        // Pastikan progress tidak melebihi 100%
+        newProgress = newProgress > 100 ? 100 : newProgress;
 
         // Update progress di list
         int index = progressNotifications.indexOf(notification);
@@ -91,6 +100,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
             name: notification.name,
             message: notification.message,
             status: newStatus,
+            taskName: notification.taskName,
+            taskDescription: notification.taskDescription,
             progressNumber: notification.progressNumber,
             progressImage: notification.progressImage,
             currentProgress: newProgress,
@@ -113,11 +124,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                newStatus == 'accepted' 
-                  ? 'Progress diterima! Progress saat ini: ${notification.currentProgress + 50}%'
-                  : 'Progress ditolak. Silakan perbaiki dan kirim ulang.',
+                newStatus == 'accepted'
+                    ? 'Progress diterima! Progress saat ini: ${notification.currentProgress + 50}%'
+                    : 'Progress ditolak. Silakan perbaiki dan kirim ulang.',
               ),
-              backgroundColor: newStatus == 'accepted' ? Colors.green : Colors.red,
+              backgroundColor:
+                  newStatus == 'accepted' ? Colors.green : Colors.red,
             ),
           );
         }
@@ -222,11 +234,20 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          notification.name,
+                          notification.taskName,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.blueAccent,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          notification.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -248,7 +269,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ),
                       Text(
                         '${notification.currentProgress}%',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,
@@ -259,14 +280,29 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 ],
               ),
               const SizedBox(height: 8),
+              Text(
+                notification.message,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+              LinearProgressIndicator(
+                value: notification.currentProgress / 100,
+                backgroundColor: Colors.grey[300],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                minHeight: 10,
+              ),
               if (notification.progressImage.isNotEmpty) ...[
+                const SizedBox(height: 8),
                 Container(
                   height: 100,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey.shade300),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Icon(
                       Icons.image,
                       size: 50,
@@ -275,16 +311,40 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   ),
                 ),
               ],
-              const SizedBox(height: 8),
-              LinearProgressIndicator(
-                value: notification.currentProgress / 100,
-                backgroundColor: Colors.grey[300],
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-                minHeight: 10,
-              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Tambahkan helper function untuk menampilkan status progress
+  Widget _buildProgressStatus(NotificationData notification) {
+    String statusText = '';
+    Color statusColor = Colors.grey;
+    if (notification.progressNumber == 1) {
+      statusText = 'Progress Pertama';
+    } else if (notification.progressNumber == 2) {
+      statusText = 'Progress Kedua';
+    } else if (notification.progressNumber == 3) {
+      statusText = 'Progress Ketiga';
+    } else if (notification.progressNumber == 4) {
+      statusText = 'Progress Final';
+    }
+    if (notification.status == 'accepted') {
+      statusColor = Colors.green;
+      statusText += ' (Diterima)';
+    } else if (notification.status == 'rejected') {
+      statusColor = Colors.red;
+      statusText += ' (Ditolak)';
+    } else {
+      statusText += ' (Pending)';
+    }
+    return Text(
+      statusText,
+      style: TextStyle(
+        color: statusColor,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
@@ -384,7 +444,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   ),
                   child: Text(
                     notification.chatMessage,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       color: Colors.black54,
                     ),
